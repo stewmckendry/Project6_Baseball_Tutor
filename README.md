@@ -18,6 +18,23 @@ echo "OPENAI_API_KEY=sk-..." > .env
 🧠 Run the Streamlit app
 streamlit run src/client/app.py
 
+🧠 Run the FastAPI backend
+
+uvicorn src.server.main:app --reload
+By default, the server runs at http://127.0.0.1:8000
+
+Test it using:
+
+Health check: http://127.0.0.1:8000/health
+Swagger UI: http://127.0.0.1:8000/docs
+Example request to /question:
+{
+  "player_name": "alex",
+  "position": "Shortstop",
+  "game_state": "GameState_2outs_Runner1"
+}
+
+
 📝 Logs
 Logs are stored in logs/app.log
 Tail logs in real time:
@@ -27,13 +44,30 @@ tail -f logs/app.log
 pytest
 Make sure you're in the project root when running tests.
 
+## 👤 Player Tracking
+
+Player profiles are stored as JSON files in:
+
+data/players/{player_name}.json
+
+Each profile includes:
+
+- History of situations seen
+- Concepts logged (e.g., "Force Out", "Cutoff Throw")
+- Last active time
+
+This enables:
+- Adaptive questioning in the future
+- Progress visualization
+- Coach insight into learning patterns
+
 📁 Project Structure
 
 src/
-  client/        # Streamlit UI
-  server/        # (Coming soon) FastAPI backend
-  utils/         # Knowledge graph, logger, etc.
-  models/        # LLM wrappers and inference
+  client/        # Streamlit app
+  server/        # FastAPI app
+  utils/         # KG builder, logger, player tracking
+  models/        # LLM question generation
   ...
 data/            # Structured KG data, inputs
 docs/            # Architecture, planning notes
