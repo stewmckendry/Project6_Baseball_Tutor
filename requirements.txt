@@ -1,12 +1,17 @@
+# Core App
 streamlit
-networkx
-pyvis
-openai
-python-dotenv
 fastapi
 uvicorn
-requests
+openai
+python-dotenv
+networkx
+pyvis
 
-ipykernel  # for notebooks
-pytest     # for test folder
+# Utils
+requests
+PyYAML
+
+# Dev & Testing
+ipykernel
+pytest
 httpx  # for API test client
