@@ -1,0 +1,18 @@
+{
+  "name": "string",
+  "history": [
+    {
+      "timestamp": "2025-04-10T02:17:55.951725",
+      "game_state": "string",
+      "position": "string",
+      "concepts": [
+        "string"
+      ]
+    }
+  ],
+  "mastered_concepts": [
+    "string"
+  ],
+  "struggled_concepts": [],
+  "last_active": "2025-04-10T02:17:55.951811"
+}

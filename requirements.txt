@@ -1,0 +1,12 @@
+streamlit
+networkx
+pyvis
+openai
+python-dotenv
+fastapi
+uvicorn
+requests
+
+ipykernel  # for notebooks
+pytest     # for test folder
+httpx  # for API test client

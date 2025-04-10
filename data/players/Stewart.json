@@ -1,0 +1,14 @@
+{
+  "name": "Stewart",
+  "history": [
+    {
+      "timestamp": "2025-04-10T02:04:36.871952",
+      "game_state": "GameState_2outs_Runner3",
+      "position": "Shortstop",
+      "concepts": []
+    }
+  ],
+  "mastered_concepts": [],
+  "struggled_concepts": [],
+  "last_active": "2025-04-10T02:04:36.872105"
+}
