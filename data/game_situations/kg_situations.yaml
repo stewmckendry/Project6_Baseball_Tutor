@@ -1,0 +1,47 @@
+- situation_id: double_play
+  game_state: 0 outs, runner on 1st
+  position: Shortstop
+  play: Ground ball hit to shortstop
+  recommended_actions:
+  - Step on 2nd base, throw to 1st for double play
+  key_concepts:
+  - Double Play
+  explanation: The best way to quickly get two outs in one play
+- situation_id: runner_on_third_less_than_two_outs
+  game_state: Less than 2 outs, runner on 3rd
+  position: Infield
+  play: Infield ground ball
+  recommended_actions:
+  - Hold the runner at third, make the out at first
+  key_concepts:
+  - Hold Runner
+  explanation: Prevent the runner from scoring by focusing on getting the out at first
+- situation_id: shallow_fly_ball
+  game_state: 0 outs, runner on 2nd
+  position: Outfield
+  play: Shallow fly ball to outfield
+  recommended_actions:
+  - Catch the ball, then throw to 3rd base to prevent runner from advancing
+  key_concepts:
+  - Cutoffs and Relays
+  explanation: Prevent the runner from advancing by executing a good cutoff and relay
+    play
+- situation_id: bunt_with_runner_on_first
+  game_state: 0 outs, runner on 1st
+  position: Third Baseman
+  play: Bunt down 3rd base line
+  recommended_actions:
+  - Field the bunt, throw to 2nd base for the force out
+  key_concepts:
+  - Force Play
+  explanation: Force out at 2nd base eliminates lead runner and keeps double play
+    in order
+- situation_id: bases_loaded_two_outs
+  game_state: 2 outs, bases loaded
+  position: Pitcher
+  play: Ground ball hit to pitcher
+  recommended_actions:
+  - Field the ball, throw to home plate for force out
+  key_concepts:
+  - Force Play
+  explanation: Force out at home plate to prevent a run from scoring

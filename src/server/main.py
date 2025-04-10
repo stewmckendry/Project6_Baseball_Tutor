@@ -3,7 +3,8 @@ from pydantic import BaseModel
 from typing import List
 
 from src.utils.kg.kg_builder import build_baseball_kg
-from src.models.socratic_engine import generate_question, get_related_knowledge
+from src.utils.kg.kg_loader import load_kg_from_yaml
+from src.models.socratic_engine import generate_question, get_related_knowledge, get_rich_context
 from src.models.llm_socratic import generate_llm_question
 from src.utils.players.player_tracker import load_player, save_player, log_concepts
 
@@ -15,8 +16,9 @@ logger.info("FastAPI app starting...")
 app = FastAPI()
 logger.info("FastAPI app started")
 
-graph = build_baseball_kg()
-logger.info("Baseball knowledge graph built successfully")
+# Load the knowledge graph (with pregenerated situations by LLM)
+graph = load_kg_from_yaml(filename="batch_situations.yaml")
+logger.info("Knowledge graph loaded successfully")
 
 
 class QuestionRequest(BaseModel):
@@ -43,7 +45,7 @@ def health():
 @app.post("/question")
 def get_question(req: QuestionRequest):
     logger.info(f"Received question request for player: {req.player_name}, position: {req.position}, game_state: {req.game_state}")
-    related_knowledge = get_related_knowledge(req.position, req.game_state, graph)
+    related_knowledge = get_rich_context(req.position, req.game_state, graph)
     static_questions = generate_question(req.position, req.game_state, graph)
     llm_question = generate_llm_question(req.position, req.game_state, related_knowledge)
     

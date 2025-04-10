@@ -61,3 +61,49 @@ def get_related_knowledge(position, game_state, graph):
     logger.info("Related knowledge retrieval complete.")
     
     return "; ".join(facts)
+
+
+def get_rich_context(position, game_state, graph):
+    context = {
+        "position": position,
+        "game_state": game_state,
+        "play": None,
+        "recommended_actions": [],
+        "key_concepts": [],
+        "explanation": None,
+    }
+
+    # 1. Find play node triggered by game_state
+    play_node = None
+    for _, v, d in graph.edges(game_state, data=True):
+        if d.get("predicate") == "triggers":
+            play_node = v
+            context["play"] = play_node
+            break
+
+    if not play_node:
+        return context  # no play found
+
+    # 2. Get recommended actions (ordered if available)
+    actions = []
+    for _, v, d in graph.edges(play_node, data=True):
+        if d.get("predicate") == "suggests":
+            actions.append({
+                "action": v,
+                "order": d.get("order", 0)
+            })
+    context["recommended_actions"] = sorted(actions, key=lambda x: x["order"])
+
+    # 3. Get key concepts
+    concepts = [
+        v for _, v, d in graph.edges(play_node, data=True)
+        if d.get("predicate") == "requiresUnderstandingOf"
+    ]
+    context["key_concepts"] = concepts
+
+    # 4. Get explanation + optional source
+    play_attrs = graph.nodes.get(play_node, {})
+    context["explanation"] = play_attrs.get("explanation")
+
+    return context
+

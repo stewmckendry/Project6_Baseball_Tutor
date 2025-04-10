@@ -4,10 +4,12 @@ import sys
 import os
 sys.path.append(os.path.abspath('.'))
 from src.utils.kg.kg_builder import build_baseball_kg
+from src.utils.kg.kg_loader import load_kg_from_yaml
 from src.models.socratic_engine import generate_question, get_related_knowledge
 from src.utils.output.graph_viz import visualize_graph
 from src.models.llm_socratic import generate_llm_question
 from src.utils.players.player_tracker import load_player, save_player, log_concepts
+from src.utils.output.formatting import pretty_game_state
 
 from src.utils.logging.logging import setup_logger
 logger = setup_logger()
@@ -24,17 +26,26 @@ player_name = st.text_input("Enter Player Name:", value="alex")
 player_data = load_player(player_name)
 logger.info(f"Loaded player data for {player_name}")
 
-# Load KG
-graph = build_baseball_kg()
-logger.info("Knowledge graph built successfully")
+# Load KG (with pregenerated situations by LLM)
+graph = load_kg_from_yaml("batch_situations.yaml")
+logger.info("Knowledge graph loaded successfully")
 
 # Choose position and game state
 logger.info("Choosing position and game state")
-positions = sorted({u for u, _ in graph.edges() if "Base" not in u and "GameState" not in u})
-game_states = sorted({v for _, v, _ in graph.edges(data=True) if "GameState" in v})
-
-position = st.selectbox("Select Your Position", positions)
-game_state = st.selectbox("Select the Game Situation", game_states)
+positions = sorted({
+    u for u, v, d in graph.edges(data=True)
+    if d.get("predicate") == "hasResponsibilityIn"
+})
+raw_game_states = sorted({
+    v for u, v, d in graph.edges(data=True)
+    if d.get("predicate") == "hasResponsibilityIn"
+})
+# Create mapping from pretty → raw (used later to look up actual node)
+game_state_map = {
+    pretty_game_state(gs): gs for gs in sorted(raw_game_states)
+}
+position = st.selectbox("Select Your Position", sorted(p.title() for p in positions))
+game_state = st.selectbox("Select the Game Situation", sorted(game_state_map.keys()))
 
 if st.button("Ask Me a Question!"):
     logger.info(f"Generating questions for player: {player_name}, position: {position}, game_state: {game_state}")
