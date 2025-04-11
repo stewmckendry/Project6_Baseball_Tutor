@@ -1,5 +1,5 @@
+import re
 from src.models.llm_openai import call_openai_chat
-
 from src.utils.logging.logging import setup_logger
 logger = setup_logger()
 
@@ -41,4 +41,45 @@ Explanation of the play:
 
 Ask one thoughtful, age-appropriate Socratic question to guide the player’s decision-making.
 """.strip()
+
+
+def evaluate_answer_with_llm(payload: dict) -> dict:
+    system_prompt = "You are a smart and encouraging baseball coach helping a young player reason through a defensive play."
+    concepts = payload.get("concepts", [])
+    user_prompt = f"""
+The player is a {payload['position']}.
+The situation is: {payload['game_state']}.
+Relevant concepts: {', '.join(concepts)}
+
+Here is the conversation so far:
+{payload['conversation_history']}
+
+They just gave this answer: "{payload['player_answer']}"
+
+Recommended actions:
+{', '.join(payload['recommended_actions'])}
+
+Explanation:
+{payload['explanation']}
+
+Evaluate the player's latest answer. Either confirm if it's correct, or guide them with a helpful Socratic question.
+
+Be sure to carry forward the original intent of the play. Give credit if the player's answer aligns with either the original or your follow-up prompts.
+
+End your response with: [CORRECT], [PARTIAL], or [INCORRECT]
+""".strip()
+    
+    logger.info("Evaluating answer with LLM...")
+    logger.debug(f"LLM Evaluation User prompt: {user_prompt}")
+    feedback = call_openai_chat(system_prompt, user_prompt, model="gpt-4")
+    logger.info("LLM evaluation completed successfully.")
+    
+    # Extract tag
+    match = re.search(r"\[(CORRECT|PARTIAL|INCORRECT)\]", feedback.upper())
+    evaluation = match.group(1).lower() if match else "unknown"
+
+    return {
+        "evaluation": evaluation,  
+        "llm_feedback": feedback
+    }
 

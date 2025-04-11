@@ -40,6 +40,16 @@ Logs are stored in logs/app.log
 Tail logs in real time:
 tail -f logs/app.log
 
+Conversation logs are saved in:
+
+logs/conversations/
+Each file captures the full turn-by-turn flow of a single play session, including:
+
+Position & game state
+Concepts involved
+All coach/player turns
+Outcome (correct / 3 strikes)
+
 🧪 Run the test suite
 pytest
 Make sure you're in the project root when running tests.
