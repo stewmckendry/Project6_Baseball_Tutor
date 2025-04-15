@@ -20,7 +20,7 @@ from src.utils.logging.convo_logging import log_conversation_turn, log_conversat
 logger = setup_logger()
 load_dotenv()
 
-API_URL = "http://localhost:8000"
+API_URL = "http://localhost:8001"
 
 # Initialize session state
 if "asked" not in st.session_state:
